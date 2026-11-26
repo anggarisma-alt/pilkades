@@ -106,7 +106,7 @@ Jika masih tampil versi lama: **Ctrl+Shift+R**.
 ## BAGIAN 3 — Hari perhitungan
 
 - **Operator (HP Android):** buka alamat GitHub Pages > masuk > **Input Suara** > pilih TPS > ketuk kartu calon (+1). **Undo** membatalkan ketukan terakhir. Setelah selesai, **Tandai Selesai**.
-- **Proyektor:** buka alamat yang sama di laptop > **Buka Layar Hasil** di halaman login (tanpa login). Sentuh layar atau gerakkan mouse untuk memunculkan kontrol (Gabungan / Per TPS / Otomatis, layar penuh, tema).
+- **Proyektor:** buka alamat yang sama di laptop > **Buka Layar Hasil** di halaman login (tanpa login). Isinya sama seperti dashboard: ringkasan angka, perolehan suara tiap calon (dengan foto), dan rekap per TPS. Sentuh layar atau gerakkan mouse untuk memunculkan tombol layar penuh (atau tekan F), ganti tema, dan tutup (Esc).
 - **Akhir:** **Laporan** > Pratinjau, unduh PDF/Excel, lalu **Kunci semua TPS**.
 
 Catatan: ketukan operator dikirim otomatis dengan penanda unik. Bila sinyal putus, aplikasi mencoba lagi dan server membuang kiriman ganda, jadi suara tidak terhitung dua kali.

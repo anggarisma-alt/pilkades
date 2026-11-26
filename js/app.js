@@ -191,11 +191,14 @@ async function handleLogin(ev) {
 }
 
 /* ======================= HALAMAN: DASHBOARD ======================= */
+function fotoBadge(c, i) {
+  return '<span class="bphoto" style="--c:' + colorOf(i) + '">' + fotoOrIcon(c.foto) + '<span class="bno">' + c.no + '</span></span>';
+}
 function barsHtml(calon, vals, sah) {
   if (!calon.length) return emptyBox('bi-person-badge', 'Belum ada calon. Tambahkan di menu Pengaturan.');
   return '<div class="bars">' + calon.map((c, i) => {
     const n = vals[i], p = sah > 0 ? n / sah * 100 : 0;
-    return '<div class="bar-row" style="--c:' + colorOf(i) + '"><div class="top"><span class="numdot">' + c.no + '</span><div class="nm">' + esc(c.nama) +
+    return '<div class="bar-row" style="--c:' + colorOf(i) + '"><div class="top">' + fotoBadge(c, i) + '<div class="nm">' + esc(c.nama) +
       '</div><div class="v">' + fmt(n) + '<small>' + pct(p) + '</small></div></div><div class="track"><i style="width:' + p.toFixed(1) + '%"></i></div></div>';
   }).join('') + '</div>';
 }
@@ -220,9 +223,8 @@ function paintDashboard(v, h, first) {
     '<div class="stat"><small><i class="bi bi-x-square"></i> Tidak Sah</small><b>' + fmt(t.tidakSah) + '</b></div>' +
     '<div class="stat"><small><i class="bi bi-percent"></i> Partisipasi</small><b>' + pct(t.partisipasi) + '</b></div>' +
     '<div class="stat"><small><i class="bi bi-building"></i> TPS Selesai</small><b>' + t.tpsSelesai + '/' + t.tpsTotal + '</b></div></div>' +
-    '<div class="two-col"><div class="card"><h3><i class="bi bi-bar-chart-fill"></i> Perolehan Suara Gabungan</h3>' + barsHtml(h.calon, h.calon.map(c => c.total), t.sah) + '</div>' +
-    '<div class="card"><h3><i class="bi bi-lightbulb"></i> Insight Otomatis</h3><ul class="insight">' + h.insight.map(x => '<li><i class="bi bi-dot"></i><span>' + esc(x) + '</span></li>').join('') +
-    '</ul><p style="color:var(--muted);font-size:12.5px;margin:12px 0 0">Partisipasi dihitung dari DPT TPS yang sudah mulai dihitung. Penetapan calon terpilih tetap oleh panitia.</p></div></div>' +
+    '<div class="card"><h3><i class="bi bi-bar-chart-fill"></i> Perolehan Suara Gabungan</h3>' + barsHtml(h.calon, h.calon.map(c => c.total), t.sah) +
+    '<p style="color:var(--muted);font-size:12.5px;margin:14px 0 0">Partisipasi dihitung dari DPT TPS yang sudah mulai dihitung. Penetapan calon terpilih tetap oleh panitia.</p></div>' +
     '<div class="card"><h3><i class="bi bi-table"></i> Rekap per TPS</h3>' + (h.perTps.length ? '<div class="table-wrap">' + rekapTable(h) + '</div>' : emptyBox('bi-building', 'Belum ada TPS.')) + '</div></div>';
 }
 PAGES.dashboard = async function (v) {
@@ -439,48 +441,31 @@ async function setStatus(st) {
 }
 
 /* ======================= LAYAR PROYEKTOR ======================= */
+/* Isi layar = isi dashboard: ringkasan, perolehan suara (dengan foto), rekap per TPS. */
 function openLayar() {
   clearTimers();
   const root = $('#layarRoot');
-  const prev = AppState.layar;
-  AppState.layar = { mode: prev ? prev.mode : 'gabungan', idx: 0, data: null, ok: true, sig: '', timers: [], ctlTimer: null };
+  AppState.layar = { data: null, ok: true, timers: [], ctlTimer: null, sig: '', logo: null };
   root.hidden = false; document.body.classList.add('layar-open');
   root.className = 'layar show-ctrl';
   root.innerHTML = '<div class="l-head"><div class="l-logo" id="lLogo"><i class="bi bi-bar-chart-fill"></i></div><div class="l-title"><small id="lDesa">Memuat...</small><h1 id="lJudul"></h1></div>' +
     '<div class="l-meta"><span class="l-badge" id="lBadge">SEMENTARA</span><span class="live" id="lLive"><i></i><span id="lTime">--:--:--</span></span></div></div>' +
-    '<div class="l-view" id="lView"></div><div class="l-main" id="lMain"><div class="l-msg"><div><div class="spinner" style="margin:0 auto 12px"></div>Memuat hasil...</div></div></div><div class="l-stats" id="lStats"></div>' +
-    '<div class="l-controls" id="lCtl"><div class="seg" id="lSeg"></div><button class="icon-btn" onclick="layarGeser(-1)" aria-label="Sebelumnya"><i class="bi bi-chevron-left"></i></button>' +
-    '<button class="icon-btn" onclick="layarGeser(1)" aria-label="Berikutnya"><i class="bi bi-chevron-right"></i></button>' +
-    '<button class="icon-btn" onclick="layarFullscreen()" aria-label="Layar penuh"><i class="bi bi-fullscreen"></i></button>' +
+    '<div class="l-body" id="lBody"><div class="l-msg"><div><div class="spinner" style="margin:0 auto 12px"></div>Memuat hasil...</div></div></div>' +
+    '<div class="l-controls" id="lCtl"><button class="icon-btn" onclick="layarFullscreen()" aria-label="Layar penuh"><i class="bi bi-fullscreen"></i></button>' +
     '<button class="icon-btn" onclick="toggleTheme()" aria-label="Ganti tema"><i class="bi bi-circle-half"></i></button>' +
     '<button class="icon-btn" onclick="layarTutup()" aria-label="Tutup layar"><i class="bi bi-x-lg"></i></button></div>';
-  paintLayarSeg();
   const L = AppState.layar;
   const show = () => { root.classList.add('show-ctrl'); clearTimeout(L.ctlTimer); L.ctlTimer = setTimeout(() => root.classList.remove('show-ctrl'), 4500); };
-  L.showFn = show;
   ['mousemove', 'touchstart', 'click', 'keydown'].forEach(ev => root.addEventListener(ev, show, { passive: true }));
   document.addEventListener('keydown', layarKey);
   show();
   pollLayar();
   L.timers.push(setInterval(pollLayar, 5000));
-  L.timers.push(setInterval(() => { if (L.mode === 'auto' && L.data) { L.idx++; paintLayar(); } }, 12000));
 }
 function layarKey(e) {
   if (!AppState.layar) return;
   if (e.key === 'Escape') layarTutup();
-  else if (e.key === 'ArrowRight') layarGeser(1);
-  else if (e.key === 'ArrowLeft') layarGeser(-1);
   else if (e.key === 'f' || e.key === 'F') layarFullscreen();
-}
-function paintLayarSeg() {
-  const L = AppState.layar, el = $('#lSeg'); if (!el) return;
-  el.innerHTML = [['gabungan', 'Gabungan'], ['tps', 'Per TPS'], ['auto', 'Otomatis']].map(m => '<button class="' + (L.mode === m[0] ? 'on' : '') + '" onclick="layarMode(\'' + m[0] + '\')">' + m[1] + '</button>').join('');
-}
-function layarMode(m) { const L = AppState.layar; L.mode = m; L.idx = 0; paintLayarSeg(); paintLayar(); }
-function layarGeser(d) {
-  const L = AppState.layar; if (!L.data) return;
-  if (L.mode === 'gabungan') { L.mode = 'tps'; paintLayarSeg(); }
-  L.idx += d; paintLayar();
 }
 function layarFullscreen() {
   const el = document.documentElement, fn = el.requestFullscreen || el.webkitRequestFullscreen;
@@ -513,51 +498,42 @@ async function pollLayar() {
   } catch (e) {
     if (AppState.layar !== L || e.kind === 'auth') return;
     L.ok = false;
-    const live = $('#lLive'); if (live) { live.classList.add('off'); }
+    const live = $('#lLive'); if (live) live.classList.add('off');
     if (e.kind === 'server' && !L.data) {
-      $('#lMain').innerHTML = '<div class="l-msg"><div><i class="bi bi-slash-circle"></i>' + esc(e.message) + '</div></div>';
-      $('#lStats').innerHTML = '';
+      $('#lBody').innerHTML = '<div class="l-msg"><div><i class="bi bi-slash-circle"></i>' + esc(e.message) + '</div></div>';
+      L.sig = '';
     }
   }
 }
 function paintLayar() {
   const L = AppState.layar, h = L && L.data; if (!h) return;
+  const t = h.total;
   $('#lDesa').textContent = h.desa || 'Desa';
   $('#lJudul').textContent = h.judul || '';
-  const logo = $('#lLogo'); if (L.logo !== h.logo) { L.logo = h.logo; logo.innerHTML = h.logo ? '<img src="' + esc(h.logo) + '" alt="" referrerpolicy="no-referrer">' : '<i class="bi bi-bar-chart-fill"></i>'; }
+  if (L.logo !== h.logo) { L.logo = h.logo; $('#lLogo').innerHTML = h.logo ? '<img src="' + esc(h.logo) + '" alt="" referrerpolicy="no-referrer">' : '<i class="bi bi-bar-chart-fill"></i>'; }
   const bd = $('#lBadge'); bd.textContent = h.final ? 'FINAL' : 'SEMENTARA'; bd.className = 'l-badge' + (h.final ? ' final' : '');
   $('#lTime').textContent = 'Diperbarui ' + h.updatedAt; $('#lLive').classList.toggle('off', !L.ok);
 
-  const nT = h.perTps.length;
-  let vid = 'gab';
-  if (L.mode === 'tps' && nT) { L.idx = ((L.idx % nT) + nT) % nT; vid = h.perTps[L.idx].id; }
-  else if (L.mode === 'auto') { const views = ['gab'].concat(h.perTps.map(t => t.id)); L.idx = L.idx % views.length; vid = views[L.idx]; }
-  let vals, sah, ts, dpt, part, label, prog;
-  if (vid === 'gab') {
-    vals = h.calon.map(c => c.total); sah = h.total.sah; ts = h.total.tidakSah; dpt = h.total.dpt; part = h.total.partisipasi;
-    label = 'Gabungan semua TPS'; prog = h.total.tpsSelesai + ' / ' + h.total.tpsTotal + ' TPS';
-  } else {
-    const t = h.perTps.find(x => x.id === vid);
-    vals = h.calon.map(c => t.calon[c.id] || 0); sah = t.sah; ts = t.tidakSah; dpt = t.dpt;
-    part = (t.status !== 'Belum mulai' && t.dpt > 0) ? (sah + ts) / t.dpt * 100 : 0; label = t.nama; prog = t.status;
-  }
-  $('#lView').innerHTML = '<i class="bi bi-geo-alt-fill"></i> ' + esc(label);
-
-  if (!h.calon.length) { $('#lMain').innerHTML = '<div class="l-msg"><div><i class="bi bi-person-badge"></i>Belum ada calon.</div></div>'; L.sig = ''; return; }
-  const sig = vid + '|' + h.calon.map(c => c.id + c.foto).join(',');
+  // Kerangka dibangun ulang hanya bila susunan calon/foto berubah, supaya foto tidak berkedip dan bar bergerak halus
+  const sig = h.calon.map(c => c.id + '|' + c.foto + '|' + c.nama).join(',');
   if (sig !== L.sig) {
     L.sig = sig;
-    $('#lMain').innerHTML = h.calon.map((c, i) => '<div class="lc" style="--c:' + colorOf(i) + '"><div class="lc-photo"><div class="ph">' + fotoOrIcon(c.foto) + '</div><span class="lc-no">' + c.no + '</span></div>' +
-      '<div><div class="lc-name">' + esc(c.nama) + '</div><div class="lc-votes" id="lv-' + c.id + '">0</div><div class="lc-pct" id="lp-' + c.id + '">0,0%</div></div>' +
-      '<div class="lc-bar"><i id="lb-' + c.id + '" style="width:0"></i></div></div>').join('');
+    const stats = [['DPT', 'ls-dpt', 'bi-people'], ['Suara Sah', 'ls-sah', 'bi-check2-square'], ['Tidak Sah', 'ls-ts', 'bi-x-square'], ['Partisipasi', 'ls-part', 'bi-percent'], ['TPS Selesai', 'ls-tps', 'bi-building']];
+    $('#lBody').innerHTML = '<div class="l-stats">' + stats.map(x => '<div class="l-stat"><small><i class="bi ' + x[2] + '"></i> ' + x[0] + '</small><b id="' + x[1] + '"></b></div>').join('') + '</div>' +
+      '<div class="l-grid"><div class="l-card"><h3><i class="bi bi-bar-chart-fill"></i> Perolehan Suara Gabungan</h3>' +
+      (h.calon.length ? '<div class="l-bars">' + h.calon.map((c, i) => '<div class="l-bar" style="--c:' + colorOf(i) + '"><span class="l-photo">' + fotoOrIcon(c.foto) + '<span class="l-no">' + c.no + '</span></span>' +
+        '<div class="l-bar-main"><div class="l-bar-top"><span class="l-name">' + esc(c.nama) + '</span><span class="l-val"><b id="lv-' + c.id + '">0</b><small id="lp-' + c.id + '">0,0%</small></span></div>' +
+        '<div class="l-track"><i id="lb-' + c.id + '" style="width:0"></i></div></div></div>').join('') + '</div>' : '<div class="l-msg"><div><i class="bi bi-person-badge"></i>Belum ada calon.</div></div>') +
+      '</div><div class="l-card"><h3><i class="bi bi-table"></i> Rekap per TPS</h3><div class="l-table" id="lTable"></div></div></div>';
   }
-  h.calon.forEach((c, i) => {
-    const p = sah > 0 ? vals[i] / sah * 100 : 0;
-    $('#lv-' + c.id).textContent = fmt(vals[i]); $('#lp-' + c.id).textContent = pct(p);
-    $('#lb-' + c.id).style.width = p.toFixed(1) + '%';
+  $('#ls-dpt').textContent = fmt(t.dpt); $('#ls-sah').textContent = fmt(t.sah); $('#ls-ts').textContent = fmt(t.tidakSah);
+  $('#ls-part').textContent = pct(t.partisipasi); $('#ls-tps').textContent = t.tpsSelesai + '/' + t.tpsTotal;
+  h.calon.forEach(c => {
+    const p = t.sah > 0 ? c.total / t.sah * 100 : 0;
+    const v = $('#lv-' + c.id); if (!v) return;
+    v.textContent = fmt(c.total); $('#lp-' + c.id).textContent = pct(p); $('#lb-' + c.id).style.width = p.toFixed(1) + '%';
   });
-  $('#lStats').innerHTML = [['DPT', fmt(dpt)], ['Suara Sah', fmt(sah)], ['Tidak Sah', fmt(ts)], ['Partisipasi', pct(part)], [vid === 'gab' ? 'TPS Selesai' : 'Status', esc(prog)]]
-    .map(x => '<div class="l-stat"><small>' + x[0] + '</small><b>' + x[1] + '</b></div>').join('');
+  $('#lTable').innerHTML = h.perTps.length ? rekapTable(h) : emptyBox('bi-building', 'Belum ada TPS.');
 }
 
 /* ======================= HALAMAN: LAPORAN ======================= */

@@ -243,46 +243,68 @@ table.tbl { border-collapse: collapse; width: 100%; font-size: 13.5px; }
 .skeleton i { display: block; height: 84px; border-radius: 16px; background: linear-gradient(90deg, var(--sky) 25%, var(--surface-2) 50%, var(--sky) 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; }
 @keyframes shimmer { to { background-position: -200% 0; } }
 
-/* ===== LAYAR PROYEKTOR ===== */
-.layar { position: fixed; inset: 0; z-index: 150; display: flex; flex-direction: column; color: var(--text); background: radial-gradient(1200px 600px at 10% -10%, color-mix(in srgb, var(--primary) 16%, transparent), transparent), var(--bg); overflow: hidden; }
-.l-head { display: flex; align-items: center; gap: clamp(10px, 1.6vw, 24px); padding: clamp(10px, 1.6vh, 22px) clamp(14px, 2.4vw, 40px); color: #fff; background: linear-gradient(135deg, var(--navy), var(--primary-600) 70%, var(--primary)); }
-.l-logo { width: clamp(44px, 7vh, 88px); height: clamp(44px, 7vh, 88px); border-radius: 18%; background: #fff; display: grid; place-items: center; color: var(--primary-600); font-size: clamp(24px, 4vh, 48px); overflow: hidden; flex: none; }
+/* foto calon di dashboard */
+.bphoto { position: relative; width: 52px; height: 52px; border-radius: 14px; background: var(--sky); color: var(--c, var(--primary)); display: grid; place-items: center; font-size: 24px; overflow: hidden; flex: none; border: 2px solid var(--c, var(--primary)); }
+.bphoto img { width: 100%; height: 100%; object-fit: cover; }
+.bphoto .bno { position: absolute; left: 0; top: 0; background: var(--c, var(--primary)); color: #fff; font-size: 12px; font-weight: 800; padding: 0 7px; border-radius: 0 0 10px 0; line-height: 1.5; }
+
+/* ===== LAYAR PROYEKTOR (isi seperti dashboard) ===== */
+.layar { position: fixed; inset: 0; z-index: 150; display: flex; flex-direction: column; color: var(--text); background: var(--bg); overflow: hidden; }
+.l-head { display: flex; align-items: center; gap: clamp(10px, 1.6vw, 24px); padding: clamp(8px, 1.4vh, 20px) clamp(14px, 2.4vw, 40px); color: #fff; background: linear-gradient(135deg, var(--navy), var(--primary-600) 70%, var(--primary)); flex: none; }
+.l-logo { width: clamp(40px, 6.5vh, 80px); height: clamp(40px, 6.5vh, 80px); border-radius: 18%; background: #fff; display: grid; place-items: center; color: var(--primary-600); font-size: clamp(22px, 3.6vh, 44px); overflow: hidden; flex: none; }
 .l-logo img { width: 100%; height: 100%; object-fit: contain; }
 .l-title { flex: 1; min-width: 0; }
-.l-title small { display: block; font-size: clamp(12px, 1.5vw, 24px); opacity: .88; letter-spacing: .6px; text-transform: uppercase; }
-.l-title h1 { font-size: clamp(18px, 3.2vw, 56px); letter-spacing: -.5px; }
-.l-meta { text-align: right; font-size: clamp(11px, 1.3vw, 20px); display: grid; gap: 4px; justify-items: end; }
-.l-badge { padding: .25em .9em; border-radius: 99px; font-weight: 800; font-size: clamp(11px, 1.4vw, 22px); background: #fff; color: var(--primary-700); }
+.l-title small { display: block; font-size: clamp(11px, 1.4vw, 22px); opacity: .88; letter-spacing: .6px; text-transform: uppercase; }
+.l-title h1 { font-size: clamp(17px, 3vw, 52px); letter-spacing: -.5px; }
+.l-meta { text-align: right; font-size: clamp(11px, 1.2vw, 19px); display: grid; gap: 4px; justify-items: end; }
+.l-badge { padding: .25em .9em; border-radius: 99px; font-weight: 800; font-size: clamp(11px, 1.3vw, 20px); background: #fff; color: var(--primary-700); }
 .l-badge.final { background: #10B981; color: #fff; }
 .live { display: inline-flex; align-items: center; gap: 6px; opacity: .92; }
 .live i { width: .6em; height: .6em; border-radius: 50%; background: #34D399; animation: pulse 1.6s infinite; }
 .live.off i { background: #F87171; animation: none; }
 @keyframes pulse { 50% { opacity: .3; transform: scale(.8); } }
-.l-view { padding: clamp(6px, 1.2vh, 14px) clamp(14px, 2.4vw, 40px) 0; font-weight: 800; font-size: clamp(14px, 2vw, 32px); color: var(--primary-600); display: flex; gap: 10px; align-items: center; }
-:root[data-theme="dark"] .l-view { color: #A9C7FF; }
-.l-main { flex: 1; min-height: 0; padding: clamp(8px, 1.6vh, 20px) clamp(14px, 2.4vw, 40px); display: grid; gap: clamp(10px, 1.6vw, 26px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); align-content: stretch; }
-.lc { display: flex; flex-direction: column; justify-content: space-between; gap: 1vh; min-height: 0; background: var(--surface); border: 1px solid var(--border); border-top: clamp(6px, .9vh, 12px) solid var(--c); border-radius: clamp(14px, 2vw, 32px); padding: clamp(10px, 1.8vh, 26px); box-shadow: var(--shadow); text-align: center; overflow: hidden; }
-.lc-photo { position: relative; flex: 1 1 0; min-height: 0; display: grid; place-items: center; }
-.lc-photo .ph { height: 100%; max-height: 34vh; aspect-ratio: 1 / 1; border-radius: 22%; background: var(--sky); overflow: hidden; display: grid; place-items: center; color: var(--c); font-size: clamp(40px, 9vh, 120px); }
-.lc-photo .ph img { width: 100%; height: 100%; object-fit: cover; }
-.lc-no { position: absolute; top: 0; left: 0; min-width: clamp(34px, 6vh, 80px); height: clamp(34px, 6vh, 80px); display: grid; place-items: center; border-radius: 24%; background: var(--c); color: #fff; font-weight: 800; font-size: clamp(18px, 3.6vh, 48px); }
-.lc-name { font-weight: 800; font-size: clamp(15px, 2.3vw, 38px); line-height: 1.15; }
-.lc-votes { font-weight: 800; font-size: clamp(34px, 7.2vw, 128px); line-height: 1; letter-spacing: -2px; font-variant-numeric: tabular-nums; color: var(--c); }
-.lc-pct { font-weight: 700; font-size: clamp(14px, 2.2vw, 36px); color: var(--muted); }
-.lc-bar { height: clamp(10px, 1.8vh, 22px); border-radius: 99px; background: var(--sky); overflow: hidden; }
-.lc-bar i { display: block; height: 100%; background: var(--c); border-radius: 99px; transition: width .8s cubic-bezier(.2,.8,.2,1); }
-.l-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(6px, 1vw, 18px); padding: 0 clamp(14px, 2.4vw, 40px) clamp(10px, 1.6vh, 22px); }
-.l-stat { background: var(--surface); border: 1px solid var(--border); border-radius: clamp(10px, 1.2vw, 20px); padding: clamp(6px, 1.2vh, 16px) clamp(8px, 1vw, 18px); text-align: center; }
-.l-stat small { display: block; color: var(--muted); font-weight: 700; font-size: clamp(10px, 1.15vw, 19px); text-transform: uppercase; letter-spacing: .4px; }
-.l-stat b { font-size: clamp(16px, 2.6vw, 46px); font-variant-numeric: tabular-nums; }
-.l-controls { position: absolute; left: 50%; bottom: 14px; transform: translate(-50%, 24px); display: flex; gap: 8px; align-items: center; padding: 8px; background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 10px 40px rgba(0,0,0,.28); opacity: 0; pointer-events: none; transition: .25s; max-width: calc(100% - 20px); overflow-x: auto; }
+
+.l-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(8px, 1.4vh, 18px); padding: clamp(8px, 1.6vh, 20px) clamp(14px, 2.4vw, 40px) clamp(10px, 1.8vh, 24px); }
+.l-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(6px, 1vw, 16px); flex: none; }
+.l-stat { background: var(--surface); border: 1px solid var(--border); border-radius: clamp(10px, 1.2vw, 18px); padding: clamp(6px, 1.1vh, 14px) clamp(10px, 1.1vw, 20px); box-shadow: var(--shadow); }
+.l-stat small { display: flex; align-items: center; gap: 6px; color: var(--muted); font-weight: 700; font-size: clamp(10px, 1.05vw, 18px); }
+.l-stat small i { color: var(--primary); }
+.l-stat b { display: block; font-size: clamp(18px, 2.6vw, 48px); line-height: 1.15; font-variant-numeric: tabular-nums; letter-spacing: -.5px; }
+.l-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(8px, 1.4vw, 22px); }
+.l-card { min-height: 0; min-width: 0; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: clamp(12px, 1.4vw, 24px); box-shadow: var(--shadow); padding: clamp(10px, 1.6vh, 22px) clamp(12px, 1.4vw, 26px); }
+.l-card h3 { flex: none; display: flex; align-items: center; gap: 8px; font-size: clamp(13px, 1.5vw, 26px); margin-bottom: clamp(6px, 1.2vh, 16px); }
+.l-card h3 i { color: var(--primary); }
+.l-bars { flex: 1; min-height: 0; display: grid; grid-auto-rows: minmax(0, 1fr); gap: clamp(6px, 1.2vh, 16px); }
+.l-bar { display: flex; align-items: center; gap: clamp(10px, 1.4vw, 24px); min-height: 0; }
+.l-photo { position: relative; height: 100%; max-height: 20vh; aspect-ratio: 1 / 1; flex: none; border-radius: 18%; background: var(--sky); border: clamp(2px, .3vw, 4px) solid var(--c); display: grid; place-items: center; color: var(--c); font-size: clamp(22px, 4vh, 56px); overflow: hidden; }
+.l-photo img { width: 100%; height: 100%; object-fit: cover; }
+.l-no { position: absolute; left: 0; top: 0; min-width: 1.9em; text-align: center; background: var(--c); color: #fff; font-weight: 800; font-size: clamp(11px, 1.8vh, 24px); padding: .1em .5em; border-radius: 0 0 .7em 0; }
+.l-bar-main { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: clamp(4px, .9vh, 12px); }
+.l-bar-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.l-name { font-weight: 800; font-size: clamp(14px, 1.9vw, 34px); line-height: 1.15; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.l-val { display: flex; align-items: baseline; gap: .5em; flex: none; }
+.l-val b { font-size: clamp(22px, 3.4vw, 64px); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -1px; color: var(--c); }
+.l-val small { font-weight: 700; color: var(--muted); font-size: clamp(12px, 1.5vw, 26px); min-width: 3.6em; text-align: right; }
+.l-track { height: clamp(10px, 2vh, 26px); border-radius: 99px; background: var(--sky); overflow: hidden; }
+.l-track i { display: block; height: 100%; background: var(--c); border-radius: 99px; transition: width .8s cubic-bezier(.2,.8,.2,1); }
+.l-table { flex: 1; min-height: 0; overflow: auto; border: 1px solid var(--border); border-radius: 12px; }
+.l-table .tbl { font-size: clamp(11px, 1.2vw, 20px); }
+.l-table .tbl th, .l-table .tbl td { padding: clamp(5px, .9vh, 12px) clamp(6px, .8vw, 14px); }
+.l-table .badge { font-size: clamp(10px, 1vw, 16px); }
+.l-msg { flex: 1; display: grid; place-items: center; text-align: center; padding: 24px; color: var(--muted); font-size: clamp(16px, 2vw, 28px); }
+.l-msg i { display: block; font-size: 56px; color: var(--primary); margin-bottom: 10px; }
+
+.l-controls { position: absolute; left: 50%; bottom: 14px; transform: translate(-50%, 24px); display: flex; gap: 8px; align-items: center; padding: 8px; background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 10px 40px rgba(0,0,0,.28); opacity: 0; pointer-events: none; transition: .25s; }
 .layar.show-ctrl .l-controls { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-.l-controls .seg { min-width: 250px; }
 .l-controls .icon-btn { background: var(--sky); color: var(--text); }
-.l-msg { flex: 1; display: grid; place-items: center; text-align: center; padding: 30px; color: var(--muted); font-size: clamp(16px, 2vw, 28px); }
-.l-msg i { display: block; font-size: 64px; color: var(--primary); margin-bottom: 12px; }
-@media (max-width: 640px) {
-  .l-stats { grid-template-columns: repeat(3, 1fr); } .l-stats .l-stat:nth-child(n+4) { display: none; }
-  .l-main { overflow-y: auto; grid-template-columns: 1fr; } .lc { flex-direction: row; align-items: center; text-align: left; gap: 12px; } .lc-photo { flex: none; } .lc-photo .ph { height: 74px; width: 74px; }
+
+/* HP / layar sempit atau potret: tumpuk ke bawah dan boleh digulir */
+@media (max-width: 900px), (orientation: portrait) {
+  .l-body { overflow-y: auto; }
+  .l-stats { grid-template-columns: repeat(3, 1fr); }
+  .l-grid { grid-template-columns: 1fr; flex: none; }
+  .l-card { min-height: auto; }
+  .l-bars { grid-auto-rows: auto; }
+  .l-photo { height: auto; width: clamp(56px, 16vw, 110px); max-height: none; }
+  .l-table { overflow-x: auto; }
 }
-@media (orientation: portrait) and (min-width: 641px) { .l-stats { grid-template-columns: repeat(3, 1fr); } }
